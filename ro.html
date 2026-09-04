@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <base target="_top">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1">
+
+  <title>RO Service Management</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      color: #222;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 850px;
+      padding: 25px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+
+      box-shadow:
+        0 6px 25px rgba(0, 0, 0, 0.10);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 35px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 34px;
+    }
+
+    .header p {
+      margin-top: 10px;
+      color: #666;
+      font-size: 17px;
+    }
+
+    .menu {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .menu-button {
+      border: none;
+      border-radius: 14px;
+
+      padding: 30px 20px;
+      min-height: 150px;
+
+      cursor: pointer;
+
+      background: #f8f9fa;
+      border: 1px solid #e0e0e0;
+
+      transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+    }
+
+    .menu-button:hover {
+      transform: translateY(-3px);
+
+      box-shadow:
+        0 5px 16px rgba(0, 0, 0, 0.10);
+    }
+
+    .menu-button:disabled {
+      cursor: wait;
+      opacity: 0.6;
+    }
+
+    .icon {
+      font-size: 42px;
+      margin-bottom: 12px;
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .description {
+      margin-top: 7px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .loading {
+      text-align: center;
+      margin-top: 20px;
+      color: #666;
+      display: none;
+    }
+
+    .error {
+      margin-top: 20px;
+      padding: 12px;
+      border-radius: 8px;
+
+      background: #ffebee;
+      color: #b71c1c;
+
+      display: none;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      color: #888;
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+
+      body {
+        align-items: flex-start;
+      }
+
+      .container {
+        padding: 15px;
+        margin-top: 20px;
+      }
+
+      .card {
+        padding: 25px 18px;
+      }
+
+      .header h1 {
+        font-size: 28px;
+      }
+
+      .menu {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .menu-button {
+        min-height: 120px;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <div class="container">
+
+    <div class="card">
+
+
+      <div class="header">
+
+        <h1>
+          RO Service Management
+        </h1>
+
+        <p>
+          Customer Management System
+        </p>
+
+      </div>
+
+
+      <div class="menu">
+
+
+        <!-- CUSTOMER ENTRY -->
+
+        <button
+          class="menu-button"
+          onclick="openPage('entry')">
+
+          <div class="icon">
+            ➕
+          </div>
+
+          <div class="title">
+            Customer Entry
+          </div>
+
+          <div class="description">
+            Add a new RO customer
+          </div>
+
+        </button>
+
+
+        <!-- CUSTOMER UPDATE -->
+
+        <button
+          class="menu-button"
+          onclick="openPage('update')">
+
+          <div class="icon">
+            ✏️
+          </div>
+
+          <div class="title">
+            Update Customer
+          </div>
+
+          <div class="description">
+            Edit customer information
+          </div>
+
+        </button>
+
+
+        <!-- CUSTOMER VIEW -->
+
+        <button
+          class="menu-button"
+          onclick="openPage('view')">
+
+          <div class="icon">
+            👁️
+          </div>
+
+          <div class="title">
+            View Customers
+          </div>
+
+          <div class="description">
+            View monthly service schedule
+          </div>
+
+        </button>
+
+
+        <!-- CUSTOMER DELETE -->
+
+        <button
+          class="menu-button"
+          onclick="openPage('delete')">
+
+          <div class="icon">
+            🗑️
+          </div>
+
+          <div class="title">
+            Delete Customer
+          </div>
+
+          <div class="description">
+            Mark a customer as inactive
+          </div>
+
+        </button>
+
+
+      </div>
+
+
+      <div
+        class="loading"
+        id="loading">
+
+        Opening page...
+
+      </div>
+
+
+      <div
+        class="error"
+        id="error">
+      </div>
+
+
+      <div class="footer">
+
+        RO Service Management System
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+
+    /**
+     * Opens one of the four
+     * customer-management pages.
+     *
+     * We obtain the actual Web App
+     * URL from Apps Script instead of
+     * using window.location.href.
+     */
+    function openPage(page) {
+
+      document
+        .getElementById('loading')
+        .style.display = 'block';
+
+
+      document
+        .getElementById('error')
+        .style.display = 'none';
+
+
+      google.script.run
+
+        .withSuccessHandler(
+          function(webAppUrl) {
+
+            if (!webAppUrl) {
+
+              showError(
+                'Unable to determine the Web App URL.'
+              );
+
+              return;
+
+            }
+
+
+            const targetUrl =
+              webAppUrl +
+              '?page=' +
+              encodeURIComponent(page);
+
+
+            /*
+             * Navigate the TOP browser window.
+             *
+             * This avoids remaining inside
+             * the Apps Script sandbox iframe.
+             */
+
+            window.top.location.href =
+              targetUrl;
+
+          }
+        )
+
+        .withFailureHandler(
+          function(error) {
+
+            showError(
+              'Unable to open page: ' +
+              error.message
+            );
+
+          }
+        )
+
+        .getWebAppUrl();
+
+    }
+
+
+    function showError(message) {
+
+      document
+        .getElementById('loading')
+        .style.display = 'none';
+
+
+      const errorBox =
+        document.getElementById(
+          'error'
+        );
+
+
+      errorBox.textContent =
+        message;
+
+
+      errorBox.style.display =
+        'block';
+
+    }
+
+
+  </script>
+
+
+</body>
+
+</html>
