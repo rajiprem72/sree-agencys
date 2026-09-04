@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <base target="_top">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+
+  <title>RO Service - Customer Entry</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      color: #222;
+    }
+
+    .container {
+      max-width: 520px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow:
+        0 4px 18px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      text-align: center;
+      font-size: 26px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 7px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      background: white;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #4285f4;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      background: #4285f4;
+      color: white;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    button:hover {
+      background: #3367d6;
+    }
+
+    button:disabled {
+      background: #aaa;
+      cursor: not-allowed;
+    }
+
+    #message {
+      margin-top: 18px;
+      padding: 12px;
+      border-radius: 8px;
+      display: none;
+      line-height: 1.5;
+    }
+
+    .success {
+      background: #e8f5e9;
+      color: #1b5e20;
+      display: block !important;
+    }
+
+    .error {
+      background: #ffebee;
+      color: #b71c1c;
+      display: block !important;
+    }
+
+    .loading {
+      text-align: center;
+      margin-top: 12px;
+      color: #666;
+      display: none;
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+  <div class="container">
+
+    <div class="card">
+
+      <h1>RO Service Customer</h1>
+
+      <div class="subtitle">
+        Add New Customer
+      </div>
+
+
+      <form id="customerForm">
+
+
+        <!-- Salutation -->
+
+        <div class="form-group">
+
+          <label for="salutation">
+            Salutation
+          </label>
+
+          <select
+            id="salutation"
+            required>
+
+            <option value="">
+              Select Salutation
+            </option>
+
+            <option value="Mr.">
+              Mr.
+            </option>
+
+            <option value="Mrs.">
+              Mrs.
+            </option>
+
+            <option value="Ms.">
+              Ms.
+            </option>
+
+            <option value="Dr.">
+              Dr.
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- Name -->
+
+        <div class="form-group">
+
+          <label for="name">
+            Name
+          </label>
+
+          <input
+            type="text"
+            id="name"
+            placeholder="Enter customer name"
+            autocomplete="name"
+            required>
+
+        </div>
+
+
+        <!-- Mobile -->
+
+        <div class="form-group">
+
+          <label for="mobile">
+            Mobile / WhatsApp Number
+          </label>
+
+          <input
+            type="tel"
+            id="mobile"
+            placeholder="919884486609"
+            inputmode="numeric"
+            maxlength="12"
+            required>
+
+        </div>
+
+
+        <!-- Location -->
+
+        <div class="form-group">
+
+          <label for="location">
+            Location
+          </label>
+
+          <input
+            type="text"
+            id="location"
+            placeholder="Enter location"
+            required>
+
+        </div>
+
+
+        <!-- Visit Date -->
+
+        <div class="form-group">
+
+          <label for="visitDate">
+            Visit Date
+          </label>
+
+          <input
+            type="date"
+            id="visitDate"
+            required>
+
+        </div>
+
+
+        <!-- Save -->
+
+        <button
+          type="submit"
+          id="saveButton">
+
+          Save Customer
+
+        </button>
+
+
+        <div
+          id="loading"
+          class="loading">
+
+          Saving customer...
+
+        </div>
+
+
+        <div
+          id="message">
+        </div>
+
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+    const form =
+      document.getElementById(
+        'customerForm'
+      );
+
+    const saveButton =
+      document.getElementById(
+        'saveButton'
+      );
+
+    const message =
+      document.getElementById(
+        'message'
+      );
+
+    const loading =
+      document.getElementById(
+        'loading'
+      );
+
+
+    form.addEventListener(
+      'submit',
+      function(event) {
+
+        event.preventDefault();
+
+        message.className = '';
+        message.style.display = 'none';
+        message.textContent = '';
+
+        const customer = {
+
+          salutation:
+            document
+              .getElementById('salutation')
+              .value,
+
+          name:
+            document
+              .getElementById('name')
+              .value
+              .trim(),
+
+          mobile:
+            document
+              .getElementById('mobile')
+              .value
+              .trim(),
+
+          location:
+            document
+              .getElementById('location')
+              .value
+              .trim(),
+
+          visitDate:
+            document
+              .getElementById('visitDate')
+              .value
+
+        };
+
+
+        saveButton.disabled = true;
+
+        loading.style.display = 'block';
+
+
+        google.script.run
+
+          .withSuccessHandler(
+            function(result) {
+
+              loading.style.display =
+                'none';
+
+              saveButton.disabled =
+                false;
+
+
+              message.className =
+                'success';
+
+              message.style.display =
+                'block';
+
+              message.innerHTML =
+                '<strong>Customer added successfully!</strong><br>' +
+                'S.No: ' +
+                result.serialNumber +
+                '<br>' +
+                'Name: ' +
+                result.name +
+                '<br>' +
+                'Mobile: ' +
+                result.mobile +
+                '<br>' +
+                'Location: ' +
+                result.location +
+                '<br>' +
+                'Visit Date: ' +
+                result.visitDate;
+
+
+              form.reset();
+
+            }
+          )
+
+          .withFailureHandler(
+            function(error) {
+
+              loading.style.display =
+                'none';
+
+              saveButton.disabled =
+                false;
+
+
+              message.className =
+                'error';
+
+              message.style.display =
+                'block';
+
+              message.textContent =
+                'Error: ' +
+                error.message;
+
+            }
+          )
+
+          .addCustomer(customer);
+
+      });
+
+  </script>
+
+</body>
+
+</html>
